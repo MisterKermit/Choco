@@ -40,6 +40,7 @@ void loop() {
       myservo.write(open);
       delay(500);
       myservo.write(closed);
+      delay(500);
     } else if (!botton && bottonState) {
       bottonState = false;
     }
