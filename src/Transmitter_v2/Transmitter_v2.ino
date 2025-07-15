@@ -13,18 +13,18 @@ bool success;
 
 // button pin, light pin; var to store output of digitalRead() of button
 int buttonPin = 3;
-int ledPIN = 4;
+int ledPIN = 5;
 int buttonState;
+int prevState; // to store last state of button, preventing resending when holding
 
 // address matches receiver
 const byte address[6] = "00001";
 
 void setup() {
-  // baud rate 9600
-  Serial.begin(9600);
   // set button pin input and led pin output; transmitter pins handled automatically by library
   pinMode(buttonPin, INPUT);
   pinMode(ledPIN, OUTPUT);
+  digitalWrite(ledPIN, HIGH);
   // set up radio; address 00001, automatically writes to pipe 0, power level minimum, set as transmitter
   radio.begin();
   radio.openWritingPipe(address);
@@ -35,18 +35,19 @@ void setup() {
 void loop() {
   // read button input pin; HIGH if pressed, LOW otherwise
   buttonState = digitalRead(buttonPin);
-  Serial.print("button state: ");
-  Serial.println(buttonState);
-  // if button pressed, send value of "buttonState" int; set bool "success" to true if receive acknowledgement, false otherwise
-  if (buttonState) {
+  // if button pressed, and wasn't pressed before, send value of "buttonState" int; set bool "success" to true if receive acknowledgement, false otherwise
+  if (buttonState && !prevState) {
+    prevState = HIGH;
     success = radio.write(&buttonState, sizeof(buttonState));
-    // TODO: NOT SURE WHAT TO DO WITH LED
-    // if (success) {
-    //   digitalWrite(ledPIN, HIGH);
-    // } else {
-    //   digitalWrite(ledPIN, LOW);
-    // }
-    Serial.println(success);
+    // if received acknowledgement, temporarily turn off LED, and delay, allowing servo to move before resending
+    if (success) {
+      digitalWrite(ledPIN, LOW);
+      delay(500);
+      digitalWrite(ledPIN, HIGH);
+      delay(500);
+    }
+  } else if (!buttonState && prevState) {
+    prevState = LOW;
   }
   // wait 0.1 seconds to prevent overloading board
   delay(100);

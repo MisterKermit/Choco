@@ -11,8 +11,6 @@ RF24 radio(ce_pin, csn_pin);
 
 // will store output received
 int botton;
-// stores previous button state to prevent issues with holding button
-int bottonState = false;
 
 // channel matches with transmitter
 const byte address[6] = "00001";
@@ -45,10 +43,9 @@ void loop() {
     radio.read(&botton, sizeof(botton));
     Serial.println(botton);
 
-    // when button pressed and it wasn't pressed before
+    // when button pressed
     if (botton) {
       // open, delay .5 seconds, close
-      bottonState = true;
       myservo.write(open);
       delay(500);
       myservo.write(closed);
