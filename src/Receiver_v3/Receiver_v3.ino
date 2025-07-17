@@ -27,6 +27,10 @@ const int servoPin2 = 5;
 const int open2 = 95;
 const int closed2 = 160;
 
+// transistor pins
+const int transistor1 = 4;
+const int transistor2 = 3;
+
 void setup() {
   // set up radio; address 00001, pipe 0, minimum power level, set as receiver
   radio.begin();
@@ -34,31 +38,45 @@ void setup() {
   radio.setPALevel(RF24_PA_MIN);
   radio.startListening();
 
+  // transistors off
+  digitalWrite(transistor1, LOW);
+  digitalWrite(transistor2, LOW);
+
   // set feeder servo pin, move to default position
   feeder.attach(servoPin1);
   feeder.write(closed1);
+  // allow servo time to move
+  delay(500);
   // set mixer servo pin, move to default position
   mixer.attach(servoPin2);
   mixer.write(closed2);
-  // allow servos time to move
+  // allow servo time to move
   delay(500);
 }
 
 void loop() {
   // check for unread transmission
+  digitalWrite(transistor1, LOW);
+  digitalWrite(transistor2, LOW);
   if (radio.available()) {
     // read transmission into "botton" int
     radio.read(&botton, sizeof(botton));
 
     // when button pressed
     if (botton) {
-      // open feeder, delay 0.5 seconds, close feeder and move mixer, delay 0.5 seconds to allow everything to move, move mixer again
-      feeder.write(open1);
-      delay(500);
-      feeder.write(closed1);
+      // open and close feeder and mixer; delay 0.5 seconds to allow each part to move
+      digitalWrite(transistor2, HIGH);
       mixer.write(open2);
       delay(500);
       mixer.write(closed2);
+      delay(750);
+      digitalWrite(transistor2, LOW);
+      digitalWrite(transistor1, HIGH);
+      feeder.write(open1);
+      delay(500);
+      feeder.write(closed1);
+      delay(750);
+      digitalWrite(transistor1, LOW);
     }
   }
 }
