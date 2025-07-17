@@ -24,9 +24,13 @@ int closed = 37;
 void setup() {
   // baud rate 9600
   Serial.begin(9600);
+  // allow Serial time to set up
+  while(!Serial);
 
   // set up radio; address 00001, pipe 0, minimum power level, set as receiver
-  radio.begin();
+  success = radio.begin();
+  Serial.print("Begin: ");
+  Serial.println(success);
   radio.openReadingPipe(0, address);
   radio.setPALevel(RF24_PA_MIN);
   radio.startListening();
@@ -34,6 +38,7 @@ void setup() {
   // set servo pin, move to default position
   myservo.attach(servoPin);
   myservo.write(closed);
+  delay(500);
 }
 
 void loop() {
