@@ -24,8 +24,8 @@ const int closed1 = 47;
 // mixer servo constructor, servo pins, angle constants
 Servo mixer;
 const int servoPin2 = 5;
-const int open2 = 95;
-const int closed2 = 160;
+const int open2 = 148;
+const int closed2 = 78;
 
 // transistor pins
 const int transistor1 = 4;
