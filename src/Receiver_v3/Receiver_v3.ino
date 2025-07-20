@@ -18,16 +18,16 @@ const byte address[6] = "00001";
 // feeder servo constructor, servo pins, angle constants
 Servo feeder;
 const int servoPin1 = 6;
-const int open1 = 137;
-const int closed1 = 47;
+const int open1 = 135;
+const int closed1 = 45;
 
 // mixer servo constructor, servo pins, angle constants
 Servo mixer;
 const int servoPin2 = 5;
-const int open2 = 148;
-const int closed2 = 78;
+const int open2 = 145;
+const int closed2 = 75;
 
-// transistor pins
+// transistor pins make sure that servos don't pull power at the same time
 const int transistor1 = 4;
 const int transistor2 = 3;
 
