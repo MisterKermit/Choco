@@ -42,7 +42,7 @@ void loop() {
     // if received acknowledgement, temporarily turn off LED, and delay, allowing servo to move before resending
     if (success) {
       digitalWrite(ledPIN, LOW);
-      delay(2500);
+      delay(2000);
       digitalWrite(ledPIN, HIGH);
     }
   } else if (!buttonState && prevState) {
